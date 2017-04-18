@@ -26,8 +26,9 @@ app.get('/currentMatchStat/:summonerName', function(req, res) {
         });
     }else{
         lolGuessService.getPlayersDetailsFromCurrentMatch(req.params.summonerName, function(data){
-            console.log('Webservice return:' + data);
-            res.send(data);
+            const jsonData = JSON.stringify(data);
+            console.log('Webservice return:' + jsonData);
+            res.send(jsonData);
         });
     }
 });
