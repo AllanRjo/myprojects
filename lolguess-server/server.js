@@ -21,7 +21,7 @@ app.get('/currentMatchStat/:summonerName', function(req, res) {
     if('mock' == req.params.summonerName){
         fs.readFile('lolCurrentGameInfo.json', 'utf8', function(err, data) {  
             if (err) throw err;
-            console.log(data);
+            // console.log(data);
             res.send(data);
         });
     }else{

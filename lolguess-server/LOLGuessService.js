@@ -8,13 +8,12 @@ const Error = (m,c) => ({
     code: c
 })
 
-const Participant= (p) => ({
-    participant: p,
+const Participant = {
     summonerLevel: '',
     championInfos: {},
     stats: '',
-    champioLevel: ''
-})
+    championLevel: ''
+}
 
 const CurrentGameStats = {
     participants: [],
@@ -35,18 +34,21 @@ const lolGuessService = {
                     let len = participants.length;
                     let j = 0, finished = 0;
                     for(j =0; j < len; j++){
-                        let p = Participant(participants[j]);
-                        p.summonerLevel = usersDetails[p.participant.summonerId].summonerLevel;                            
+                        let p = participants[j];
+                        let summonerLevel = usersDetails[p.summonerId].summonerLevel;
+                        Object.assign(p, {'summonerLevel':summonerLevel});
                         CurrentGameStats.participants.push(p);
                         // console.log('p.id=' + p.participant.summonerId + ' u.id=' + usersDetails[p.participant.summonerId].id);
-                        lolChampionMasteryAPIClient.getMasteryByPlayerAndChampion(p.participant.summonerId, p.participant.championId, 
+                        lolChampionMasteryAPIClient.getMasteryByPlayerAndChampion(p.summonerId, p.championId, 
                             function(champioMasteryInfos, responseCode){
+                                let championLevel;
                                 if(responseCode == 200)
-                                    p.champioLevel = champioMasteryInfos.champioLevel;
+                                    championLevel = champioMasteryInfos.champioLevel;
                                 else
-                                    p.champioLevel = 0;
-                                lolChampionAPIClient.getByIdOnlyImage(p.participant.championId, function(championInfos){
-                                    p.championInfos = championInfos;
+                                    championLevel = 0;
+                                Object.assign(p, {'championLevel':championLevel});
+                                lolChampionAPIClient.getByIdOnlyImage(p.championId, function(championInfos){
+                                    Object.assign(p, {'championInfos':championInfos});
                                     finished++;
                                     if( finished == len)
                                         callback(CurrentGameStats);
